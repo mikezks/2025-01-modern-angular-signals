@@ -34,9 +34,20 @@ export class FlightSearchComponent {
   protected flights = this.ticketsFacade.flights;
 
   constructor() {
-    effect(
-      () => console.log(this.route())
-    );
+    /* effect(() => {
+      console.log(this.route1());
+      console.log(this.route2());
+      console.log(this.route3());
+    });
+    effect(() => {
+      console.log(this.route1());
+    });
+    effect(() => {
+      console.log(this.route2());
+    });
+    effect(() => {
+      console.log(this.route3());
+    }); */
 
     console.log(this.route[SIGNAL]);
   }

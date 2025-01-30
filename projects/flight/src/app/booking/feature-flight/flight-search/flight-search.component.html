@@ -33,7 +33,7 @@
       <app-flight-card
         [item]="flight"
         [(selected)]="basket[flight.id]"
-        (delayTrigger)="delay($event)"
+        (itemChange)="delay($event)"
       />
     </div>
   }

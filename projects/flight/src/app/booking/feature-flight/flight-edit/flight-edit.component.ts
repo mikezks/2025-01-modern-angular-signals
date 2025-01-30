@@ -1,4 +1,4 @@
-import { Component, effect, inject, input } from '@angular/core';
+import { Component, effect, inject, input, numberAttribute } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -19,12 +19,8 @@ export class FlightEditComponent {
   private store = inject(Store);
   private flightService = inject(FlightService);
 
-  readonly id = input(0);
-  readonly flight = toSignal(
-    toObservable(this.id).pipe(
-      switchMap(id => this.flightService.findById(id))
-    ), { initialValue: initialFlight }
-  );
+  readonly id = input(0, { transform: numberAttribute });
+  readonly flightResource = this.flightService.findByIdAsResource(this.id);
 
   protected editForm = inject(NonNullableFormBuilder).group({
     id: [0],
@@ -39,9 +35,16 @@ export class FlightEditComponent {
       params => console.log(params)
     );
 
-    effect(() => this.editForm.patchValue(
-      this.flight()
-    ));
+    const effectRef = effect(() => {
+      const flight = this.flightResource.value();
+      if (flight) {
+        this.editForm.patchValue(flight)
+      }
+    });
+
+    effectRef.destroy();
+
+    this.flightResource.set
   }
 
   protected save(): void {

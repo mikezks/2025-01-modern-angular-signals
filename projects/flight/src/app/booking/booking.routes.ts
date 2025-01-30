@@ -36,9 +36,6 @@ export const BOOKING_ROUTES: Routes = [
           {
             path: 'edit/:id',
             component: FlightEditComponent,
-            resolve: {
-              flight: FlightResolver
-            }
           }
         ]
       }

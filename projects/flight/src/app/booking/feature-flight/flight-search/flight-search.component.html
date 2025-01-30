@@ -8,7 +8,7 @@
   <div class="card-body">
 
     <app-flight-filter
-      [filter]="filter"
+      [filter]="filter()"
       (searchTrigger)="search($event)"
     >
       @if (flights.length) {
@@ -23,6 +23,7 @@
       }
     </app-flight-filter>
 
+    <p>{{ route() }}</p>
   </div>
 </div>
 

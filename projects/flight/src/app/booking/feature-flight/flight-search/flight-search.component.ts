@@ -1,8 +1,9 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Flight, FlightFilter, injectTicketsFacade } from '../../logic-flight';
 import { FlightCardComponent, FlightFilterComponent } from '../../ui-flight';
+import { SIGNAL } from '@angular/core/primitives/signals';
 
 
 @Component({
@@ -18,25 +19,36 @@ import { FlightCardComponent, FlightFilterComponent } from '../../ui-flight';
 export class FlightSearchComponent {
   private ticketsFacade = injectTicketsFacade();
 
-  protected filter = {
+  protected filter = signal({
     from: 'London',
     to: 'New York',
     urgent: false
-  };
+  });
+  route = computed(
+    () => 'From ' + this.filter().from + ' to ' + this.filter().to + '.'
+  );
   protected basket: Record<number, boolean> = {
     3: true,
     5: true
   };
   protected flights$ = this.ticketsFacade.flights$;
 
-  protected search(filter: FlightFilter): void {
-    this.filter = filter;
+  constructor() {
+    effect(
+      () => console.log(this.route())
+    );
 
-    if (!this.filter.from || !this.filter.to) {
+    console.log(this.route[SIGNAL]);
+  }
+
+  protected search(filter: FlightFilter): void {
+    this.filter.set(filter);
+
+    if (!this.filter().from || !this.filter().to) {
       return;
     }
 
-    this.ticketsFacade.search(this.filter);
+    this.ticketsFacade.search(this.filter());
   }
 
   protected delay(flight: Flight): void {
